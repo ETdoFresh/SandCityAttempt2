@@ -34,17 +34,10 @@ public class CameraToggle : MonoBehaviour
 
     private void EnableOnlyOneCamera()
     {
-        _currentCamera.enabled = true;
+        _currentCamera.gameObject.SetActive(true);
 
         foreach (Camera camera in _cameras)
             if (camera != _currentCamera)
-                camera.enabled = false;
-
-        if (_currentCamera != Camera.main)
-            foreach (NavMeshRigidBodyMovement movementScript in GameObject.FindObjectsOfType<NavMeshRigidBodyMovement>())
-                movementScript.enabled = false;
-        else
-            foreach (NavMeshRigidBodyMovement movementScript in GameObject.FindObjectsOfType<NavMeshRigidBodyMovement>())
-                movementScript.enabled = true;
+                camera.gameObject.SetActive(false);
     }
 }

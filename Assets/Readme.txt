@@ -26,17 +26,19 @@ S01
 		- Create a few models
 			- Player Model
 			- Sand Castle 1, 2, and 3
-	BONUS
+	E05BONUS
 		- Left Shift Walk
 		- Camera Depths. Main should be highest.
 		- Commit our first git
 		- Upload our first remote git
 		- Setup cloud build
-		
 	E06
+		- Show results of cloud build
 		- Controls on Camera (View affects controls)
 		- Creation of the Mold
 	FUTURE
+		- 3rd Person Camera Controls (WASD to rotate camera)
+		- 1st Person Camera Controls (Movement of camera)
 		- Create a beach terrain
 		- Collect Sand to make molds
 		- Deformation of the Terrain

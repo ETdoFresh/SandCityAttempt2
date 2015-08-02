@@ -34,17 +34,24 @@ public class NavMeshRigidBodyMovement : MonoBehaviour {
         _navMeshAgent.updateRotation = true;
 
         _previousGroundCheckDistance = _groundCheckDistance;
+
+        MainCameraControls.MovementEvent += OnMovement;
+        MainCameraControls.CrouchEvent += OnCrouch;
+        MainCameraControls.WalkEvent += OnWalk;
+        MainCameraControls.JumpEvent += OnJump;
+    }
+
+    void OnDestroy()
+    {
+        MainCameraControls.MovementEvent -= OnMovement;
+        MainCameraControls.CrouchEvent -= OnCrouch;
+        MainCameraControls.WalkEvent -= OnWalk;
+        MainCameraControls.JumpEvent -= OnJump;
     }
 
     void Update()
     {
-        DetectClickAndSetDestination();
         _navMeshAgent.nextPosition = transform.position;
-
-        _isCrouching = Input.GetKey(KeyCode.C);
-        _isWalking = Input.GetButton("Fire3");
-        _isJumping = Input.GetButtonDown("Jump");
-
         MoveUpdate(_navMeshAgent.velocity);
         AnimatorUpdate();
     }
@@ -68,7 +75,7 @@ public class NavMeshRigidBodyMovement : MonoBehaviour {
         }
     }
 
-    private void AnimatorUpdate()
+    void AnimatorUpdate()
     {
         
         _animator.SetFloat("Forward", _forwardAmount, 0.1f, Time.deltaTime);
@@ -85,17 +92,7 @@ public class NavMeshRigidBodyMovement : MonoBehaviour {
             _animator.speed = 1;
     }
 
-    void DetectClickAndSetDestination()
-    {
-        if (Input.GetButton("Fire1"))
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
-                _navMeshAgent.SetDestination(hit.point);
-        }
-    }
+    
 
     void MoveUpdate(Vector3 move)
     {
@@ -115,14 +112,14 @@ public class NavMeshRigidBodyMovement : MonoBehaviour {
             HandleAirborneMovement();
     }
 
-    private void HandleAirborneMovement()
+    void HandleAirborneMovement()
     {
         Vector3 extraGravityForce = (Physics.gravity * _gravityMultiplier) - Physics.gravity;
         _rigidBody.AddForce(extraGravityForce);
         _groundCheckDistance = _rigidBody.velocity.y < 0 ? _previousGroundCheckDistance : 0.01f;
     }
 
-    private void HandleGroundedMovement()
+    void HandleGroundedMovement()
     {
         if (_isJumping && !_isCrouching && _isGrounded)
         {
@@ -161,5 +158,28 @@ public class NavMeshRigidBodyMovement : MonoBehaviour {
         // help the character turn faster (this is in addition to root rotation in the animation)
         float turnSpeed = Mathf.Lerp(_stationaryTurnSpeed, _movingTurnSpeed, _forwardAmount);
         transform.Rotate(0, _turnAmount * turnSpeed * Time.deltaTime, 0);
+    }
+
+    void OnMovement(Camera camera, Vector3 mousePosition)
+    {
+        RaycastHit hit;
+        Ray ray = camera.ScreenPointToRay(mousePosition);
+        if (Physics.Raycast(ray, out hit))
+            _navMeshAgent.SetDestination(hit.point);
+    }
+
+    void OnJump(bool isJumping)
+    {
+        _isJumping = isJumping;
+    }
+
+    void OnWalk(bool isWalking)
+    {
+        _isWalking = isWalking;
+    }
+
+    void OnCrouch(bool isCrouching)
+    {
+        _isCrouching = isCrouching;
     }
 }
