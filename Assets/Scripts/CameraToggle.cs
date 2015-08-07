@@ -24,7 +24,7 @@ public class CameraToggle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire2"))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             _currentIndex = (_currentIndex + 1) % _cameras.Count;
             _currentCamera = _cameras[_currentIndex];

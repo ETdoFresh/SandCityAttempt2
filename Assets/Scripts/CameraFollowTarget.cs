@@ -29,4 +29,6 @@ public class CameraFollowTarget : MonoBehaviour
             }
         }
     }
+
+    public Vector3 TargetTracker { get { return _targetTracker; } }
 }

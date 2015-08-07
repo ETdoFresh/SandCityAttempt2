@@ -36,23 +36,28 @@ S01
 		- Show results of cloud build
 		- Controls on Camera (View affects controls)
 		- Creation of the Mold
-	FUTURE
-		- 3rd Person Camera Controls (WASD to rotate camera)
-		- 1st Person Camera Controls (Movement of camera)
-		- Create a beach terrain
-		- Collect Sand to make molds
+	E06BONUS
+		- Look at Particles
+	E07
+		- 3rd Person Camera Controls (WASD to rotate camera) - Partial
+		- 1st Person Camera Controls (Movement of camera) - Partial
+		- Destroying a Sand Castle - Setup Particle System and a bad mound
+	E08
+		- Fix Particle appearing weird places (mound was clipping with ground cause particles to shoot everywhere)
+	E09
+		- Create a beach terrain (Maybe?)
 		- Deformation of the Terrain
 			- Built-in Unity Terrain (might be too slow for the game)
-			- Maybe make our own deformable terrain
+	E10
+		- Collect Sand to make molds
+		- 3rd Person Camera Controls (WASD to rotate camera) - Done
+	FUTURE
+		- 1st Person Camera Controls (Movement of camera) - Partial
 		- Water waves
-		- Marine Life
 		- Sandy Beach Life (birds)
+		- Marine Life
+		- Sharks? Water Spouts? Pirates?
 		- Menu Screen
 		- Networkability (Server/Client)
-		- Sharks? Water Spouts? Pirates?
-
-	BONUS
 		- Slow Radius on Movement
 		- Transition from 1st Person Cam to 3rd person (instead of cutting between cameras)
-		- Seperate Movement Engine from Movement Control
-		- Git and cloud build
