@@ -7,14 +7,17 @@ public class TerrainDig : MonoBehaviour
     public delegate int TakeSandHandler(int amountOfSand);
     public event SandDigHandler SandDig;
     public event TakeSandHandler TakeSand;
+    public float digRate = 0.001f;
 
     Terrain _terrain;
     Vector3 _lastPosition;
+    Camera _camera;
 
     // Use this for initialization
     void Start()
     {
-        _terrain = GetComponent<Terrain>();
+        _camera = GetComponent<Camera>();
+        _terrain = GameObject.FindObjectOfType<Terrain>();
         _lastPosition = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
     }
 
@@ -38,7 +41,7 @@ public class TerrainDig : MonoBehaviour
     void PlaceSand()
     {
         RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit))
         {
             int takenSand = 0;
@@ -60,7 +63,7 @@ public class TerrainDig : MonoBehaviour
 
             for (int i = 0; i < heights.GetLength(0); i++)
                 for (int j = 0; j < heights.GetLength(0); j++)
-                    heights[i, j] = Mathf.Max(0, heights[i, j] + 0.01f);
+                    heights[i, j] = Mathf.Max(0, heights[i, j] + digRate);
 
             _terrain.terrainData.SetHeights(xBase - 2, yBase - 2, heights);
         }
@@ -69,7 +72,7 @@ public class TerrainDig : MonoBehaviour
     void DigInSand()
     {
         RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit))
         {
             if (SandDig != null)
@@ -85,7 +88,7 @@ public class TerrainDig : MonoBehaviour
 
             for (int i = 0; i < heights.GetLength(0); i++)
                 for (int j = 0; j < heights.GetLength(0); j++)
-                    heights[i, j] = Mathf.Max(0, heights[i, j] - 0.01f);
+                    heights[i, j] = Mathf.Max(0, heights[i, j] - digRate);
 
             _terrain.terrainData.SetHeights(xBase - 2, yBase - 2, heights);
         }

@@ -8,7 +8,7 @@ public class SandCollection : MonoBehaviour
 
     void Awake()
     {
-        _terrainDig = GetComponent<TerrainDig>();
+        _terrainDig = GetComponentInChildren<TerrainDig>();
     }
 
     void OnEnable()

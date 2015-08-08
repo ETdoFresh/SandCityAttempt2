@@ -51,8 +51,18 @@ S01
 	E10
 		- Collect Sand to make molds
 		- 3rd Person Camera Controls (WASD to rotate camera) - Done
+	E11
+		- 1st Person Camera Controls - Moves player instead of camera
+			- Suggestion: 1st Person Camera should act like FPS
+		- Merged Terrain Scene and Movement Scene
+		- Changed Controls from placing Sand Castles to digging
 	FUTURE
-		- 1st Person Camera Controls (Movement of camera) - Partial
+		- Optimize/Refactor Code
+		- Fix Movement getting caught in all sorts of knooks and crannies.
+		- Change Controls so that it's a PC only game
+		- Controls - Place Sand Castle Mode
+		- Controls - Smooth Terrin Mode
+		- Controls - Dig/Place Sand (In place now)
 		- Water waves
 		- Sandy Beach Life (birds)
 		- Marine Life
