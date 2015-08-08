@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MainCameraControls : MonoBehaviour
+public class ControlThirdPersonCamera : MonoBehaviour
 {
     public static event MovementHandler MovementEvent;
     public static event CrouchHandler CrouchEvent;
@@ -13,7 +13,7 @@ public class MainCameraControls : MonoBehaviour
     public delegate void WalkHandler(bool isWalking);
     public delegate void JumpHandler(bool isJumping);
 
-    private Camera _camera;
+    Camera _camera;
 
     void Start()
     {

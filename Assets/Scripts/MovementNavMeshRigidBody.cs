@@ -1,28 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// TODO: Split Movement Engine from Movement Control Engine
+public class MovementNavMeshRigidBody : MonoBehaviour {
 
-public class NavMeshRigidBodyMovement : MonoBehaviour {
-
-    [SerializeField] float _stationaryTurnSpeed = 180;
-    [SerializeField] float _movingTurnSpeed = 360;
-    [SerializeField] float _groundCheckDistance = 0.2f;
-    [SerializeField] float _jumpPower = 5f;
-    [SerializeField] float _gravityMultiplier = 2f;
-    [SerializeField] float _animationAverageVelocity = 5.661f;
+    public float stationaryTurnSpeed = 180;
+    public float movingTurnSpeed = 360;
+    public float groundCheckDistance = 0.5f;
+    public float jumpPower = 5f;
+    public float gravityMultiplier = 2f;
+    public float animationAverageVelocity = 5.661f;
 
     NavMeshAgent _navMeshAgent;
     Rigidbody _rigidBody;
     Animator _animator;
-    private float _turnAmount;
-    private float _forwardAmount;
+    float _turnAmount;
+    float _forwardAmount;
     Vector3 _groundNormal;
-    float _previousGroundCheckDistance;
-    private bool _isGrounded;
-    private bool _isCrouching;
-    private bool _isWalking;
-    private bool _isJumping;
+    float _initialGroundCheckDistance;
+    bool _isGrounded;
+    bool _isCrouching;
+    bool _isWalking;
+    bool _isJumping;
 
     void Start()
     {
@@ -33,20 +31,20 @@ public class NavMeshRigidBodyMovement : MonoBehaviour {
         _navMeshAgent.updatePosition = false;
         _navMeshAgent.updateRotation = true;
 
-        _previousGroundCheckDistance = _groundCheckDistance;
+        _initialGroundCheckDistance = groundCheckDistance;
 
-        MainCameraControls.MovementEvent += OnMovement;
-        MainCameraControls.CrouchEvent += OnCrouch;
-        MainCameraControls.WalkEvent += OnWalk;
-        MainCameraControls.JumpEvent += OnJump;
+        ControlThirdPersonCamera.MovementEvent += OnMovement;
+        ControlThirdPersonCamera.CrouchEvent += OnCrouch;
+        ControlThirdPersonCamera.WalkEvent += OnWalk;
+        ControlThirdPersonCamera.JumpEvent += OnJump;
     }
 
     void OnDestroy()
     {
-        MainCameraControls.MovementEvent -= OnMovement;
-        MainCameraControls.CrouchEvent -= OnCrouch;
-        MainCameraControls.WalkEvent -= OnWalk;
-        MainCameraControls.JumpEvent -= OnJump;
+        ControlThirdPersonCamera.MovementEvent -= OnMovement;
+        ControlThirdPersonCamera.CrouchEvent -= OnCrouch;
+        ControlThirdPersonCamera.WalkEvent -= OnWalk;
+        ControlThirdPersonCamera.JumpEvent -= OnJump;
     }
 
     void Update()
@@ -87,7 +85,7 @@ public class NavMeshRigidBodyMovement : MonoBehaviour {
             _animator.SetFloat("Jump", _rigidBody.velocity.y);
 
         if (_isGrounded && _rigidBody.velocity.sqrMagnitude > 0)
-            _animator.speed = _navMeshAgent.speed / _animationAverageVelocity;
+            _animator.speed = _navMeshAgent.speed / animationAverageVelocity;
         else
             _animator.speed = 1;
     }
@@ -114,19 +112,19 @@ public class NavMeshRigidBodyMovement : MonoBehaviour {
 
     void HandleAirborneMovement()
     {
-        Vector3 extraGravityForce = (Physics.gravity * _gravityMultiplier) - Physics.gravity;
+        Vector3 extraGravityForce = (Physics.gravity * gravityMultiplier) - Physics.gravity;
         _rigidBody.AddForce(extraGravityForce);
-        _groundCheckDistance = _rigidBody.velocity.y < 0 ? _previousGroundCheckDistance : 0.01f;
+        groundCheckDistance = _rigidBody.velocity.y < 0 ? _initialGroundCheckDistance : 0.1f;
     }
 
     void HandleGroundedMovement()
     {
         if (_isJumping && !_isCrouching && _isGrounded)
         {
-            _rigidBody.AddForce(new Vector3(0, _jumpPower, 0), ForceMode.Impulse);
+            _rigidBody.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
             _isGrounded = false;
             _animator.applyRootMotion = false;
-            _groundCheckDistance = 0.1f;
+            groundCheckDistance = 0.1f;
         }
     }
 
@@ -134,12 +132,12 @@ public class NavMeshRigidBodyMovement : MonoBehaviour {
     {
 #if UNITY_EDITOR
         // helper to visualise the ground check ray in the scene view
-        Debug.DrawLine(transform.position + (Vector3.up * 0.1f), transform.position + (Vector3.up * 0.1f) + (Vector3.down * _groundCheckDistance));
+        Debug.DrawLine(transform.position + (Vector3.up * 0.1f), transform.position + (Vector3.up * 0.1f) + (Vector3.down * groundCheckDistance));
 #endif
         // 0.1f is a small offset to start the ray from inside the character
         // it is also good to note that the transform position in the sample assets is at the base of the character
         RaycastHit hitInfo;
-        if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hitInfo, _groundCheckDistance))
+        if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hitInfo, groundCheckDistance))
         {
             _groundNormal = hitInfo.normal;
             _isGrounded = true;
@@ -156,7 +154,7 @@ public class NavMeshRigidBodyMovement : MonoBehaviour {
     void ApplyExtraTurnRotation()
     {
         // help the character turn faster (this is in addition to root rotation in the animation)
-        float turnSpeed = Mathf.Lerp(_stationaryTurnSpeed, _movingTurnSpeed, _forwardAmount);
+        float turnSpeed = Mathf.Lerp(stationaryTurnSpeed, movingTurnSpeed, _forwardAmount);
         transform.Rotate(0, _turnAmount * turnSpeed * Time.deltaTime, 0);
     }
 

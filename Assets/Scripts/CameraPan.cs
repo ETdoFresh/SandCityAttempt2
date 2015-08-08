@@ -3,14 +3,13 @@ using System.Collections;
 
 public class CameraPan : MonoBehaviour
 {
+    public float sensitivity = 1;
 
-    [SerializeField] Vector3 _position;
-    [SerializeField] Vector3 _velocity;
-    [SerializeField] float _acceleration = 5;
-    [SerializeField] Vector3 _startDrag;
-    [SerializeField] Vector3 _targetVelocity;
-    [SerializeField] float _sensitivity = 1;
-    [SerializeField] GameObject _player;
+    Vector3 _velocity;
+    float _acceleration = 5;
+    Vector3 _startDrag;
+    Vector3 _targetVelocity;
+    GameObject _player;
 
     // Update is called once per frame
     void Update()
@@ -21,29 +20,10 @@ public class CameraPan : MonoBehaviour
         if (_player == null)
             return;
 
-        _position = _player.transform.position;
-        _player.GetComponent<NavMeshAgent>().SetDestination(_position);
-
-        if (Input.GetMouseButton(2))
-        {
-            if (Input.GetMouseButtonDown(2))
-                _startDrag = Input.mousePosition;
-
-            _targetVelocity = (Input.mousePosition - _startDrag) * _sensitivity;
-            _targetVelocity.z = _targetVelocity.y;
-            _targetVelocity.y = 0;
-        }
-        else
-            _targetVelocity = Vector3.zero;
-
-        Vector3 deltaVelocity = _targetVelocity - _velocity;
-        if (deltaVelocity.magnitude > _acceleration)
-            _velocity += deltaVelocity.normalized * _acceleration;
-        else
-            _velocity = _targetVelocity;
-
-        _position += _velocity;
-        _player.transform.position = _position;
+        _player.GetComponent<NavMeshAgent>().SetDestination(_player.transform.position);
+        ComputeTargetVelocity();
+        ComputeActualVelocity();
+        _player.transform.position += _velocity;
     }
 
     GameObject GetPlayer(Transform childTransform)
@@ -54,5 +34,29 @@ public class CameraPan : MonoBehaviour
             return null;
         else
             return GetPlayer(childTransform.parent);
+    }
+
+    void ComputeTargetVelocity()
+    {
+        if (Input.GetMouseButton(2))
+        {
+            if (Input.GetMouseButtonDown(2))
+                _startDrag = Input.mousePosition;
+
+            _targetVelocity = (Input.mousePosition - _startDrag) * sensitivity;
+            _targetVelocity.z = _targetVelocity.y;
+            _targetVelocity.y = 0;
+        }
+        else
+            _targetVelocity = Vector3.zero;
+    }
+
+    void ComputeActualVelocity()
+    {
+        Vector3 deltaVelocity = _targetVelocity - _velocity;
+        if (deltaVelocity.magnitude > _acceleration)
+            _velocity += deltaVelocity.normalized * _acceleration;
+        else
+            _velocity = _targetVelocity;
     }
 }

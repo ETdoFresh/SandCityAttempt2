@@ -4,11 +4,11 @@ using System.Collections;
 public class SandCollection : MonoBehaviour
 {
     public int _sand;
-    TerrainDig _terrainDig;
+    ControlTerrainDig _terrainDig;
 
     void Awake()
     {
-        _terrainDig = GetComponentInChildren<TerrainDig>();
+        _terrainDig = GetComponentInChildren<ControlTerrainDig>();
     }
 
     void OnEnable()

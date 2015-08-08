@@ -56,9 +56,12 @@ S01
 			- Suggestion: 1st Person Camera should act like FPS
 		- Merged Terrain Scene and Movement Scene
 		- Changed Controls from placing Sand Castles to digging
-	FUTURE
+	E12
 		- Optimize/Refactor Code
-		- Fix Movement getting caught in all sorts of knooks and crannies.
+		- Fix Movement by increasing groundcheckdistance
+	FUTURE
+		- Fix Movement - by mutiple ground checks? 4 or 5 maybe?
+		- Add some more content/graphics
 		- Change Controls so that it's a PC only game
 		- Controls - Place Sand Castle Mode
 		- Controls - Smooth Terrin Mode

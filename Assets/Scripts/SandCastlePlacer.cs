@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SandCastlePlacer : MonoBehaviour
 {
-    [SerializeField] GameObject _sandCastlePrefab;
+    public GameObject _sandCastlePrefab;
     Camera _camera;
 
     // Use this for initialization
@@ -17,7 +17,12 @@ public class SandCastlePlacer : MonoBehaviour
     {
         if (_sandCastlePrefab == null)
             return;
+        
+        CreateSandCastle();
+    }
 
+    void CreateSandCastle()
+    {
         if (Input.GetButtonDown("Fire1"))
         {
             RaycastHit hit;
