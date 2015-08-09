@@ -59,9 +59,10 @@ S01
 	E12
 		- Optimize/Refactor Code
 		- Fix Movement by increasing groundcheckdistance
+	E13
+		- Add some more sand castles
 	FUTURE
 		- Fix Movement - by mutiple ground checks? 4 or 5 maybe?
-		- Add some more content/graphics
 		- Change Controls so that it's a PC only game
 		- Controls - Place Sand Castle Mode
 		- Controls - Smooth Terrin Mode
