@@ -11,6 +11,7 @@ public class CameraRotateAndZoom : MonoBehaviour
     CameraFollowTarget _cameraFollowTarget;
     Vector3 _centerCircle;
     float _cameraDistanceFromCenter;
+    private Vector3 _mousePostionDown;
 
     void Start()
     {
@@ -46,9 +47,13 @@ public class CameraRotateAndZoom : MonoBehaviour
 
     void ZoomCamera()
     {
-        if (Input.GetButton("Vertical"))
+        if (Input.GetButton("Vertical") || Input.GetAxis("Mouse ScrollWheel") != 0)
         {
-            _camera.fieldOfView -= Input.GetAxis("Vertical") * zoomSensitivity;
+            if (Input.GetButton("Vertical"))
+                _camera.fieldOfView -= Input.GetAxis("Vertical") * zoomSensitivity;
+            else
+                _camera.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * 10 * zoomSensitivity;
+
             _camera.fieldOfView = Mathf.Clamp(_camera.fieldOfView, 10, 120);
         }
     }
@@ -57,5 +62,16 @@ public class CameraRotateAndZoom : MonoBehaviour
     {
         if (Input.GetButton("Horizontal"))
             rotation += Input.GetAxis("Horizontal");
+        else if (Input.GetButton("Fire2"))
+        {
+            if (Input.GetButtonDown("Fire2"))
+                _mousePostionDown = Input.mousePosition;
+
+            float deltaXPosition = Input.mousePosition.x - _mousePostionDown.x;
+            int direction = (int)(Mathf.Abs(deltaXPosition) / deltaXPosition);
+
+            rotation += direction * Vector3.Distance(_mousePostionDown, Input.mousePosition) * Time.deltaTime;
+        }
+
     }
 }

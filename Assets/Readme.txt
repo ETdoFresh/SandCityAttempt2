@@ -61,12 +61,18 @@ S01
 		- Fix Movement by increasing groundcheckdistance
 	E13
 		- Add some more sand castles
-	FUTURE
-		- Fix Movement - by mutiple ground checks? 4 or 5 maybe?
+	E14
 		- Change Controls so that it's a PC only game
+		- Added scrollwheel for zoom 3rd person
+		- Added right click for orbit 3rd person
+		- Added Sand Counter GUI
+		- Removed Camera Pan 1st Person
+	FUTURE
+		- Add 1st Person RigidBody Movement
 		- Controls - Place Sand Castle Mode
 		- Controls - Smooth Terrin Mode
 		- Controls - Dig/Place Sand (In place now)
+		- Fix Movement - by mutiple ground checks? 4 or 5 maybe?
 		- Water waves
 		- Sandy Beach Life (birds)
 		- Marine Life

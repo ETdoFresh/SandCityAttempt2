@@ -1711,7 +1711,6 @@ GameObject:
   - 124: {fileID: 1596887245}
   - 92: {fileID: 1596887244}
   - 81: {fileID: 1596887243}
-  - 114: {fileID: 1596887248}
   - 114: {fileID: 1596887247}
   m_Layer: 0
   m_Name: Player Camera
@@ -1804,18 +1803,6 @@ MonoBehaviour:
   xBase: 0
   yBase: 0
   pointOnTerrain: {x: 0, y: 0}
---- !u!114 &1596887248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1596887241}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a805ccbe7cfe12e45b185db84b7691e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sensitivity: .00100000005
 --- !u!1 &1738895035
 GameObject:
   m_ObjectHideFlags: 0
