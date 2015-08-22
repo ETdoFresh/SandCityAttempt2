@@ -7,7 +7,7 @@ public class CameraRotateAndZoom : MonoBehaviour
     public float zoomSensitivity = 1;
 
     Camera _camera;
-    float _initialFieldOfView;
+    //float _initialFieldOfView;
     CameraFollowTarget _cameraFollowTarget;
     Vector3 _centerCircle;
     float _cameraDistanceFromCenter;
@@ -16,7 +16,7 @@ public class CameraRotateAndZoom : MonoBehaviour
     void Start()
     {
         _camera = GetComponent<Camera>();
-        _initialFieldOfView = _camera.fieldOfView;
+        //_initialFieldOfView = _camera.fieldOfView;
         _cameraFollowTarget = GetComponent<CameraFollowTarget>();
     }
 
@@ -62,9 +62,9 @@ public class CameraRotateAndZoom : MonoBehaviour
     {
         if (Input.GetButton("Horizontal"))
             rotation += Input.GetAxis("Horizontal");
-        else if (Input.GetButton("Fire2"))
+        else if (Input.GetButton("Alternate"))
         {
-            if (Input.GetButtonDown("Fire2"))
+            if (Input.GetButtonDown("Alternate"))
                 _mousePostionDown = Input.mousePosition;
 
             float deltaXPosition = Input.mousePosition.x - _mousePostionDown.x;

@@ -1,35 +1,45 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class ControlFirstPersonMovement : MonoBehaviour
 {
 
-    public static event MovementHandler MovementEvent;
-    public static event CrouchHandler CrouchEvent;
-    public static event WalkHandler WalkEvent;
-    public static event JumpHandler JumpEvent;
+    public static event MovementHandler Movement;
+    public static event CrouchHandler Crouch;
+    public static event WalkHandler Walk;
+    public static event JumpHandler Jump;
+    public static event Action Enable;
+    public static event Action Disable;
 
-    public delegate void MovementHandler(Camera camera, Vector3 movement);
+    public delegate void MovementHandler(Vector2 movement);
     public delegate void CrouchHandler(bool isCrouching);
     public delegate void WalkHandler(bool isWalking);
     public delegate void JumpHandler(bool isJumping);
 
-    public Camera _camera;
-
-    void Start()
+    void OnEnable()
     {
-        _camera = GetComponent<Camera>();
+        if (Enable != null) Enable();
     }
 
-    // Update is called once per frame
+    void OnDisable()
+    {
+        if (Disable != null) Disable();
+    }
+
     void Update()
     {
-        Vector3 movement = Vector3.zero;
-        if (Input.GetButton("Vertical"))
-            movement.z += Input.GetAxis("Vertical");
-        if (Input.GetButton("Horizontal"))
-            movement.x += Input.GetAxis("Horizontal");
-
-        MovementEvent(_camera, movement);
+        if (Movement != null)
+        {
+            Vector2 movement = Vector2.zero;
+            if (Input.GetButton("Vertical"))
+                movement.y += Input.GetAxis("Vertical");
+            if (Input.GetButton("Horizontal"))
+                movement.x += Input.GetAxis("Horizontal");
+            Movement(movement);
+        }
+        if (Crouch != null) Crouch(Input.GetButton("Crouch"));
+        if (Walk != null) Walk(Input.GetButton("Walk"));
+        if (Jump != null) Jump(Input.GetButtonDown("Jump"));
     }
 }

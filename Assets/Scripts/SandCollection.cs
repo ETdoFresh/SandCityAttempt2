@@ -16,14 +16,14 @@ public class SandCollection : MonoBehaviour
 
     void OnEnable()
     {
-        _terrainDig.SandDig += CollectSand;
-        _terrainDig.TakeSand += TakeSand;
+        _terrainDig.DigInSand += CollectSand;
+        _terrainDig.AddSand += TakeSand;
     }
 
     void OnDisable()
     {
-        _terrainDig.SandDig -= CollectSand;
-        _terrainDig.TakeSand -= TakeSand;
+        _terrainDig.DigInSand -= CollectSand;
+        _terrainDig.AddSand -= TakeSand;
     }
 
     void CollectSand(int amountOfSand)

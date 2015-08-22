@@ -1,21 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MovementNavMeshRigidBody : MonoBehaviour {
-
-    public float stationaryTurnSpeed = 180;
-    public float movingTurnSpeed = 360;
+public class MovementFirstPerson : MonoBehaviour
+{
     public float groundCheckDistance = 0.5f;
     public float jumpPower = 5f;
     public float gravityMultiplier = 2f;
     public float animationAverageVelocity = 5.661f;
     public RuntimeAnimatorController animatorController;
-
-    NavMeshAgent _navMeshAgent;
-    Rigidbody _rigidBody;
     public Animator _animator;
-    float _turnAmount;
-    float _forwardAmount;
+
+    Rigidbody _rigidBody;
+    public Vector2 _movement;
     Vector3 _groundNormal;
     float _initialGroundCheckDistance;
     bool _isGrounded;
@@ -30,33 +26,28 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
         _rigidBody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
 
-        _navMeshAgent = GetComponent<NavMeshAgent>();
-        _navMeshAgent.updatePosition = false;
-        _navMeshAgent.updateRotation = true;
-
         _initialGroundCheckDistance = groundCheckDistance;
     }
 
     void OnEnable()
     {
-        ControlThirdPersonCamera.Movement += OnMovement;
-        ControlThirdPersonCamera.Crouch += OnCrouch;
-        ControlThirdPersonCamera.Walk += OnWalk;
-        ControlThirdPersonCamera.Jump += OnJump;
+        ControlFirstPersonMovement.Movement += OnMovement;
+        ControlFirstPersonMovement.Crouch += OnCrouch;
+        ControlFirstPersonMovement.Walk += OnWalk;
+        ControlFirstPersonMovement.Jump += OnJump;
     }
 
     void OnDisable()
     {
-        ControlThirdPersonCamera.Movement -= OnMovement;
-        ControlThirdPersonCamera.Crouch -= OnCrouch;
-        ControlThirdPersonCamera.Walk -= OnWalk;
-        ControlThirdPersonCamera.Jump -= OnJump;
+        ControlFirstPersonMovement.Movement -= OnMovement;
+        ControlFirstPersonMovement.Crouch -= OnCrouch;
+        ControlFirstPersonMovement.Walk -= OnWalk;
+        ControlFirstPersonMovement.Jump -= OnJump;
     }
 
     void Update()
     {
-        _navMeshAgent.nextPosition = transform.position;
-        MoveUpdate(_navMeshAgent.velocity);
+        MoveUpdate();
         AnimatorUpdate();
     }
 
@@ -67,53 +58,27 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
             Vector3 animatorVelocity = _animator.deltaPosition / Time.deltaTime;
             Vector3 deltaVelocity = animatorVelocity - _rigidBody.velocity;
             deltaVelocity.y = 0;
-
             float mass = _rigidBody.mass;
             Vector3 force = mass * deltaVelocity / Time.deltaTime;
-
-            // TODO: Enforce max force
-            //float maxForce = _navMeshAgent.speed * 5;
-            //if (force.magnitude > maxForce)
-            //    force = force.normalized * maxForce;
-
             _rigidBody.AddForce(force);
         }
     }
 
     void AnimatorUpdate()
     {
-        
-        _animator.SetFloat("Forward", _forwardAmount, 0.1f, Time.deltaTime);
-        _animator.SetFloat("Turn", _turnAmount, 0.1f, Time.deltaTime);
+        _animator.SetFloat("Vertical", _movement.y, 0.1f, Time.deltaTime);
+        _animator.SetFloat("Horizontal", _movement.x, 0.1f, Time.deltaTime);
         _animator.SetBool("Crouch", _isCrouching);
         _animator.SetBool("OnGround", _isGrounded);
 
         if (!_isGrounded)
             _animator.SetFloat("Jump", _rigidBody.velocity.y);
-
-        if (_isGrounded && _rigidBody.velocity.sqrMagnitude > 0)
-            _animator.speed = _navMeshAgent.speed / animationAverageVelocity;
-        else
-            _animator.speed = 1;
     }
 
-    
-
-    void MoveUpdate(Vector3 move)
+    void MoveUpdate()
     {
-        if (move.magnitude > 1f) move.Normalize();
-        if (_isWalking) move *= 0.5f;
-        move = transform.InverseTransformDirection(move);
-        
-        // TODO: Figure normals, maybe later?
-        //move = Vector3.ProjectOnPlane(move, _groundNormal);
-
-        _turnAmount = Mathf.Atan2(move.x, move.z);
-        _turnAmount = Mathf.Clamp(_turnAmount, 0, 1);
-        _forwardAmount = move.z;
-
+        if (_isWalking) _movement *= 0.5f;
         CheckGroundStatus();
-        ApplyExtraTurnRotation();
 
         if (_isGrounded)
             HandleGroundedMovement();
@@ -154,29 +119,17 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
         {
             _isGrounded = true;
             _animator.applyRootMotion = true;
-            //_groundNormal = hitInfo.normal;
         }
         else
         {
             _isGrounded = false;
             _animator.applyRootMotion = false;
-            //_groundNormal = Vector3.up;
         }
     }
 
-    void ApplyExtraTurnRotation()
+    void OnMovement(Vector2 movement)
     {
-        // help the character turn faster (this is in addition to root rotation in the animation)
-        float turnSpeed = Mathf.Lerp(stationaryTurnSpeed, movingTurnSpeed, _forwardAmount);
-        transform.Rotate(0, _turnAmount * turnSpeed * Time.deltaTime, 0);
-    }
-
-    void OnMovement(Camera camera, Vector3 mousePosition)
-    {
-        RaycastHit hit;
-        Ray ray = camera.ScreenPointToRay(mousePosition);
-        if (Physics.Raycast(ray, out hit))
-            _navMeshAgent.SetDestination(hit.point);
+        _movement = movement;
     }
 
     void OnJump(bool isJumping)

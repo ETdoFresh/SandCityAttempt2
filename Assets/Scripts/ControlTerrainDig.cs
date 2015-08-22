@@ -3,10 +3,10 @@ using System.Collections;
 
 public class ControlTerrainDig : MonoBehaviour
 {
-    public delegate void SandDigHandler(int amountOfSand);
-    public delegate int TakeSandHandler(int amountOfSand);
-    public event SandDigHandler SandDig;
-    public event TakeSandHandler TakeSand;
+    public delegate void DigInSandHandler(int amountOfSand);
+    public delegate int AddSandHandler(int amountOfSand);
+    public event DigInSandHandler DigInSand;
+    public event AddSandHandler AddSand;
     public float digRate = 0.001f;
     public int digSize = 4;
 
@@ -32,31 +32,31 @@ public class ControlTerrainDig : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButton("Fire1") && _lastPosition != Input.mousePosition)
+        if (Input.GetButton("Main") && _lastPosition != Input.mousePosition)
         {
             _lastPosition = Input.mousePosition;
-            DigInSand();
+            ModifySandDown();
         }
-        else if (Input.GetButton("Fire2") && _lastPosition != Input.mousePosition)
+        else if (Input.GetButton("Alternate") && _lastPosition != Input.mousePosition)
         {
             _lastPosition = Input.mousePosition;
-            PlaceSand();
+            ModifySandUp();
         }
-        else if (Input.GetButtonUp("Fire1"))
+        else if (Input.GetButtonUp("Main"))
             _lastPosition = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
     }
 
     void OnDestroy()
     {
-        SandDig = null;
+        DigInSand = null;
     }
 
-    void PlaceSand()
+    void ModifySandUp()
     {
         ModifySand(ModifyDirection.UP);
     }
 
-    void DigInSand()
+    void ModifySandDown()
     {
         ModifySand(ModifyDirection.DOWN);
     }
@@ -68,10 +68,10 @@ public class ControlTerrainDig : MonoBehaviour
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit))
         {
-            if (SandDig != null && modifyDirection == ModifyDirection.DOWN)
-                SandDig(16);
-            else if (TakeSand != null && modifyDirection == ModifyDirection.UP)
-                if (TakeSand(16) <= 0)
+            if (DigInSand != null && modifyDirection == ModifyDirection.DOWN)
+                DigInSand(16);
+            else if (AddSand != null && modifyDirection == ModifyDirection.UP)
+                if (AddSand(16) <= 0)
                     return;
 
             pointOnTerrain = new Vector2(hit.point.x - _terrain.gameObject.transform.position.x, hit.point.z - _terrain.gameObject.transform.position.z);

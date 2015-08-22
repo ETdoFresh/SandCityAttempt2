@@ -23,7 +23,7 @@ public class SandCastlePlacer : MonoBehaviour
 
     void CreateSandCastle()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Main"))
         {
             RaycastHit hit;
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);

@@ -67,12 +67,22 @@ S01
 		- Added right click for orbit 3rd person
 		- Added Sand Counter GUI
 		- Removed Camera Pan 1st Person
-	FUTURE
+	Update E15-E22
+	E22
+		- Fix Movement - by mutiple ground checks? 4 or 5 maybe?
+	E23
 		- Add 1st Person RigidBody Movement
+	E24
+		- Move in 1st Person
+	E25
+		- Fix nuisances in 1st person
+		- Animator stuff (motion not correct)
+		- Rotation of camera/player switching between modes
+	FUTURE
 		- Controls - Place Sand Castle Mode
 		- Controls - Smooth Terrin Mode
 		- Controls - Dig/Place Sand (In place now)
-		- Fix Movement - by mutiple ground checks? 4 or 5 maybe?
+		- Fix Groundcheck Gizmo, draw only on selected
 		- Water waves
 		- Sandy Beach Life (birds)
 		- Marine Life
