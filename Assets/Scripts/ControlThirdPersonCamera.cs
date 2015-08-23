@@ -4,10 +4,10 @@ using System;
 
 public class ControlThirdPersonCamera : MonoBehaviour
 {
-    public static event MovementHandler Movement;
-    public static event CrouchHandler Crouch;
-    public static event WalkHandler Walk;
-    public static event JumpHandler Jump;
+    public static event MovementHandler OnMovement;
+    public static event CrouchHandler OnCrouch;
+    public static event WalkHandler OnWalk;
+    public static event JumpHandler OnJump;
     public static event Action Enable;
     public static event Action Disable;
 
@@ -37,10 +37,10 @@ public class ControlThirdPersonCamera : MonoBehaviour
     void Update()
     {
         if (Input.GetButton("Main"))
-            if (Movement != null) Movement(_camera, Input.mousePosition);
+            if (OnMovement != null) OnMovement(_camera, Input.mousePosition);
 
-        if (Crouch != null) Crouch(Input.GetButton("Crouch"));
-        if (Walk != null) Walk(Input.GetButton("Walk"));
-        if (Jump != null) Jump(Input.GetButtonDown("Jump"));
+        if (OnCrouch != null) OnCrouch(Input.GetButton("Crouch"));
+        if (OnWalk != null) OnWalk(Input.GetButton("Walk"));
+        if (OnJump != null) OnJump(Input.GetButtonDown("Jump"));
     }
 }

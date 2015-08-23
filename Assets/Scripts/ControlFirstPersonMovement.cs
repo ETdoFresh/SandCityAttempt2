@@ -5,10 +5,10 @@ using System;
 public class ControlFirstPersonMovement : MonoBehaviour
 {
 
-    public static event MovementHandler Movement;
-    public static event CrouchHandler Crouch;
-    public static event WalkHandler Walk;
-    public static event JumpHandler Jump;
+    public static event MovementHandler OnMovement;
+    public static event CrouchHandler OnCrouch;
+    public static event WalkHandler OnWalk;
+    public static event JumpHandler OnJump;
     public static event Action Enable;
     public static event Action Disable;
 
@@ -29,17 +29,17 @@ public class ControlFirstPersonMovement : MonoBehaviour
 
     void Update()
     {
-        if (Movement != null)
+        if (OnMovement != null)
         {
             Vector2 movement = Vector2.zero;
             if (Input.GetButton("Vertical"))
                 movement.y += Input.GetAxis("Vertical");
             if (Input.GetButton("Horizontal"))
                 movement.x += Input.GetAxis("Horizontal");
-            Movement(movement);
+            OnMovement(movement);
         }
-        if (Crouch != null) Crouch(Input.GetButton("Crouch"));
-        if (Walk != null) Walk(Input.GetButton("Walk"));
-        if (Jump != null) Jump(Input.GetButtonDown("Jump"));
+        if (OnCrouch != null) OnCrouch(Input.GetButton("Crouch"));
+        if (OnWalk != null) OnWalk(Input.GetButton("Walk"));
+        if (OnJump != null) OnJump(Input.GetButtonDown("Jump"));
     }
 }

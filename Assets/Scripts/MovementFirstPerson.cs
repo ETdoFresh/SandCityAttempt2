@@ -11,6 +11,7 @@ public class MovementFirstPerson : MonoBehaviour
     public Animator _animator;
 
     Rigidbody _rigidBody;
+    NavMeshAgent _navMeshAgent;
     public Vector2 _movement;
     Vector3 _groundNormal;
     float _initialGroundCheckDistance;
@@ -25,24 +26,26 @@ public class MovementFirstPerson : MonoBehaviour
     {
         _rigidBody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
 
         _initialGroundCheckDistance = groundCheckDistance;
     }
 
     void OnEnable()
     {
-        ControlFirstPersonMovement.Movement += OnMovement;
-        ControlFirstPersonMovement.Crouch += OnCrouch;
-        ControlFirstPersonMovement.Walk += OnWalk;
-        ControlFirstPersonMovement.Jump += OnJump;
+        if (_animator != null) _animator.speed = 1;
+        ControlFirstPersonMovement.OnMovement += MovementCallback;
+        ControlFirstPersonMovement.OnCrouch += CrouchCallback;
+        ControlFirstPersonMovement.OnWalk += WalkCallback;
+        ControlFirstPersonMovement.OnJump += JumpCallback;
     }
 
     void OnDisable()
     {
-        ControlFirstPersonMovement.Movement -= OnMovement;
-        ControlFirstPersonMovement.Crouch -= OnCrouch;
-        ControlFirstPersonMovement.Walk -= OnWalk;
-        ControlFirstPersonMovement.Jump -= OnJump;
+        ControlFirstPersonMovement.OnMovement -= MovementCallback;
+        ControlFirstPersonMovement.OnCrouch -= CrouchCallback;
+        ControlFirstPersonMovement.OnWalk -= WalkCallback;
+        ControlFirstPersonMovement.OnJump -= JumpCallback;
     }
 
     void Update()
@@ -51,17 +54,17 @@ public class MovementFirstPerson : MonoBehaviour
         AnimatorUpdate();
     }
 
-    void OnAnimatorMove()
+    void FixedUpdate()
     {
-        if (_isGrounded && Time.deltaTime > 0)
-        {
-            Vector3 animatorVelocity = _animator.deltaPosition / Time.deltaTime;
-            Vector3 deltaVelocity = animatorVelocity - _rigidBody.velocity;
-            deltaVelocity.y = 0;
-            float mass = _rigidBody.mass;
-            Vector3 force = mass * deltaVelocity / Time.deltaTime;
-            _rigidBody.AddForce(force);
-        }
+        if (!_isGrounded) return;
+        Vector3 velocity = _movement * _navMeshAgent.speed;
+        velocity.z = velocity.y;
+        velocity = transform.TransformVector(velocity);
+        float mass = _rigidBody.mass;
+        Vector3 deltaVelocity = velocity - _rigidBody.velocity;
+        Vector3 force = mass * deltaVelocity / Time.fixedDeltaTime;
+        force.y = 0;
+        _rigidBody.AddForce(force);
     }
 
     void AnimatorUpdate()
@@ -77,7 +80,6 @@ public class MovementFirstPerson : MonoBehaviour
 
     void MoveUpdate()
     {
-        if (_isWalking) _movement *= 0.5f;
         CheckGroundStatus();
 
         if (_isGrounded)
@@ -90,7 +92,7 @@ public class MovementFirstPerson : MonoBehaviour
     {
         Vector3 extraGravityForce = (Physics.gravity * gravityMultiplier) - Physics.gravity;
         _rigidBody.AddForce(extraGravityForce);
-        groundCheckDistance = _rigidBody.velocity.y < 0 ? _initialGroundCheckDistance : 0.1f;
+        groundCheckDistance = _rigidBody.velocity.y < 0 ? _initialGroundCheckDistance : 0;
     }
 
     void HandleGroundedMovement()
@@ -99,8 +101,7 @@ public class MovementFirstPerson : MonoBehaviour
         {
             _rigidBody.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
             _isGrounded = false;
-            _animator.applyRootMotion = false;
-            groundCheckDistance = 0.1f;
+            groundCheckDistance = 0f;
         }
     }
 
@@ -115,34 +116,27 @@ public class MovementFirstPerson : MonoBehaviour
         _sphereCheckCenter = transform.position + (Vector3.up * _radius) + (Vector3.down * groundCheckDistance);
         _radius = 0.5f;
         int layerMask = ~LayerMask.GetMask("Player");
-        if (Physics.CheckSphere(_sphereCheckCenter, _radius, layerMask))
-        {
-            _isGrounded = true;
-            _animator.applyRootMotion = true;
-        }
-        else
-        {
-            _isGrounded = false;
-            _animator.applyRootMotion = false;
-        }
+        _isGrounded = Physics.CheckSphere(_sphereCheckCenter, _radius, layerMask);
     }
 
-    void OnMovement(Vector2 movement)
+    void MovementCallback(Vector2 movement)
     {
         _movement = movement;
+        if (_movement.magnitude > 1) _movement.Normalize();
+        if (_isWalking) _movement *= 0.5f;
     }
 
-    void OnJump(bool isJumping)
+    void JumpCallback(bool isJumping)
     {
         _isJumping = isJumping;
     }
 
-    void OnWalk(bool isWalking)
+    void WalkCallback(bool isWalking)
     {
         _isWalking = isWalking;
     }
 
-    void OnCrouch(bool isCrouching)
+    void CrouchCallback(bool isCrouching)
     {
         _isCrouching = isCrouching;
     }

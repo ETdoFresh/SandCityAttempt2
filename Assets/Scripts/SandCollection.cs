@@ -16,23 +16,23 @@ public class SandCollection : MonoBehaviour
 
     void OnEnable()
     {
-        _terrainDig.DigInSand += CollectSand;
-        _terrainDig.AddSand += TakeSand;
+        _terrainDig.OnDig += DigCallback;
+        _terrainDig.OnPlace += PlaceCallback;
     }
 
     void OnDisable()
     {
-        _terrainDig.DigInSand -= CollectSand;
-        _terrainDig.AddSand -= TakeSand;
+        _terrainDig.OnDig -= DigCallback;
+        _terrainDig.OnPlace -= PlaceCallback;
     }
 
-    void CollectSand(int amountOfSand)
+    void DigCallback(int amountOfSand)
     {
         _sand += amountOfSand;
         _text.text = "Sand: " + _sand.ToString();
     }
 
-    int TakeSand(int amountOfSand)
+    int PlaceCallback(int amountOfSand)
     {
         int takenSand = amountOfSand > _sand ? _sand : amountOfSand;
         _sand -= takenSand;

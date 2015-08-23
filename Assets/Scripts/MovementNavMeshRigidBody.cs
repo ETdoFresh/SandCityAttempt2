@@ -32,25 +32,26 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
 
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _navMeshAgent.updatePosition = false;
-        _navMeshAgent.updateRotation = true;
+        _navMeshAgent.updateRotation = false;
 
         _initialGroundCheckDistance = groundCheckDistance;
     }
 
     void OnEnable()
     {
-        ControlThirdPersonCamera.Movement += OnMovement;
-        ControlThirdPersonCamera.Crouch += OnCrouch;
-        ControlThirdPersonCamera.Walk += OnWalk;
-        ControlThirdPersonCamera.Jump += OnJump;
+        if (_navMeshAgent != null) _navMeshAgent.SetDestination(transform.position);
+        ControlThirdPersonCamera.OnMovement += MovementCallback;
+        ControlThirdPersonCamera.OnCrouch += CrouchCallback;
+        ControlThirdPersonCamera.OnWalk += WalkCallback;
+        ControlThirdPersonCamera.OnJump += JumpCallback;
     }
 
     void OnDisable()
     {
-        ControlThirdPersonCamera.Movement -= OnMovement;
-        ControlThirdPersonCamera.Crouch -= OnCrouch;
-        ControlThirdPersonCamera.Walk -= OnWalk;
-        ControlThirdPersonCamera.Jump -= OnJump;
+        ControlThirdPersonCamera.OnMovement -= MovementCallback;
+        ControlThirdPersonCamera.OnCrouch -= CrouchCallback;
+        ControlThirdPersonCamera.OnWalk -= WalkCallback;
+        ControlThirdPersonCamera.OnJump -= JumpCallback;
     }
 
     void Update()
@@ -60,29 +61,22 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
         AnimatorUpdate();
     }
 
-    void OnAnimatorMove()
+    void FixedUpdate()
     {
-        if (_isGrounded && Time.deltaTime > 0)
-        {
-            Vector3 animatorVelocity = _animator.deltaPosition / Time.deltaTime;
-            Vector3 deltaVelocity = animatorVelocity - _rigidBody.velocity;
-            deltaVelocity.y = 0;
+        Vector3 navMeshVelocity = _navMeshAgent.velocity;
+        if (_isWalking) navMeshVelocity *= 0.5f;
+        if (!_isGrounded) return;
 
-            float mass = _rigidBody.mass;
-            Vector3 force = mass * deltaVelocity / Time.deltaTime;
-
-            // TODO: Enforce max force
-            //float maxForce = _navMeshAgent.speed * 5;
-            //if (force.magnitude > maxForce)
-            //    force = force.normalized * maxForce;
-
-            _rigidBody.AddForce(force);
-        }
+        float mass = _rigidBody.mass;
+        Vector3 deltaVelocity = navMeshVelocity - _rigidBody.velocity;
+        deltaVelocity.y = 0;
+        Vector3 force = mass * deltaVelocity / Time.fixedDeltaTime;
+        _rigidBody.AddForce(force);
     }
 
     void AnimatorUpdate()
     {
-        
+        _animator.speed = _navMeshAgent.velocity.magnitude / 2 + 1;
         _animator.SetFloat("Forward", _forwardAmount, 0.1f, Time.deltaTime);
         _animator.SetFloat("Turn", _turnAmount, 0.1f, Time.deltaTime);
         _animator.SetBool("Crouch", _isCrouching);
@@ -90,26 +84,14 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
 
         if (!_isGrounded)
             _animator.SetFloat("Jump", _rigidBody.velocity.y);
-
-        if (_isGrounded && _rigidBody.velocity.sqrMagnitude > 0)
-            _animator.speed = _navMeshAgent.speed / animationAverageVelocity;
-        else
-            _animator.speed = 1;
     }
-
-    
 
     void MoveUpdate(Vector3 move)
     {
         if (move.magnitude > 1f) move.Normalize();
         if (_isWalking) move *= 0.5f;
         move = transform.InverseTransformDirection(move);
-        
-        // TODO: Figure normals, maybe later?
-        //move = Vector3.ProjectOnPlane(move, _groundNormal);
-
         _turnAmount = Mathf.Atan2(move.x, move.z);
-        _turnAmount = Mathf.Clamp(_turnAmount, 0, 1);
         _forwardAmount = move.z;
 
         CheckGroundStatus();
@@ -125,7 +107,7 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
     {
         Vector3 extraGravityForce = (Physics.gravity * gravityMultiplier) - Physics.gravity;
         _rigidBody.AddForce(extraGravityForce);
-        groundCheckDistance = _rigidBody.velocity.y < 0 ? _initialGroundCheckDistance : 0.1f;
+        groundCheckDistance = _rigidBody.velocity.y < 0 ? _initialGroundCheckDistance : 0;
     }
 
     void HandleGroundedMovement()
@@ -134,7 +116,6 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
         {
             _rigidBody.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
             _isGrounded = false;
-            _animator.applyRootMotion = false;
             groundCheckDistance = 0.1f;
         }
     }
@@ -150,18 +131,8 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
         _sphereCheckCenter = transform.position + (Vector3.up * _radius) + (Vector3.down * groundCheckDistance);
         _radius = 0.5f;
         int layerMask = ~LayerMask.GetMask("Player");
-        if (Physics.CheckSphere(_sphereCheckCenter, _radius, layerMask))
-        {
-            _isGrounded = true;
-            _animator.applyRootMotion = true;
-            //_groundNormal = hitInfo.normal;
-        }
-        else
-        {
-            _isGrounded = false;
-            _animator.applyRootMotion = false;
-            //_groundNormal = Vector3.up;
-        }
+
+        _isGrounded = Physics.CheckSphere(_sphereCheckCenter, _radius, layerMask);
     }
 
     void ApplyExtraTurnRotation()
@@ -171,7 +142,7 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
         transform.Rotate(0, _turnAmount * turnSpeed * Time.deltaTime, 0);
     }
 
-    void OnMovement(Camera camera, Vector3 mousePosition)
+    void MovementCallback(Camera camera, Vector3 mousePosition)
     {
         RaycastHit hit;
         Ray ray = camera.ScreenPointToRay(mousePosition);
@@ -179,17 +150,17 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
             _navMeshAgent.SetDestination(hit.point);
     }
 
-    void OnJump(bool isJumping)
+    void JumpCallback(bool isJumping)
     {
         _isJumping = isJumping;
     }
 
-    void OnWalk(bool isWalking)
+    void WalkCallback(bool isWalking)
     {
         _isWalking = isWalking;
     }
 
-    void OnCrouch(bool isCrouching)
+    void CrouchCallback(bool isCrouching)
     {
         _isCrouching = isCrouching;
     }

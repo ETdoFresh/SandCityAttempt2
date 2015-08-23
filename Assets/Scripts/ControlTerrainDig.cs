@@ -5,8 +5,8 @@ public class ControlTerrainDig : MonoBehaviour
 {
     public delegate void DigInSandHandler(int amountOfSand);
     public delegate int AddSandHandler(int amountOfSand);
-    public event DigInSandHandler DigInSand;
-    public event AddSandHandler AddSand;
+    public event DigInSandHandler OnDig;
+    public event AddSandHandler OnPlace;
     public float digRate = 0.001f;
     public int digSize = 4;
 
@@ -48,7 +48,7 @@ public class ControlTerrainDig : MonoBehaviour
 
     void OnDestroy()
     {
-        DigInSand = null;
+        OnDig = null;
     }
 
     void ModifySandUp()
@@ -68,10 +68,10 @@ public class ControlTerrainDig : MonoBehaviour
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit))
         {
-            if (DigInSand != null && modifyDirection == ModifyDirection.DOWN)
-                DigInSand(16);
-            else if (AddSand != null && modifyDirection == ModifyDirection.UP)
-                if (AddSand(16) <= 0)
+            if (OnDig != null && modifyDirection == ModifyDirection.DOWN)
+                OnDig(16);
+            else if (OnPlace != null && modifyDirection == ModifyDirection.UP)
+                if (OnPlace(16) <= 0)
                     return;
 
             pointOnTerrain = new Vector2(hit.point.x - _terrain.gameObject.transform.position.x, hit.point.z - _terrain.gameObject.transform.position.z);
