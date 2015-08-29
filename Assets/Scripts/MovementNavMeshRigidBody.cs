@@ -8,7 +8,9 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
     public float groundCheckDistance = 0.5f;
     public float jumpPower = 5f;
     public float gravityMultiplier = 2f;
-    public float animationAverageVelocity = 5.661f;
+    public float animationRunVelocity = 5.661f;
+    public float animationWalkVelocity = 1.556f;
+    public float animationCrouchVelocity = 0.560f;
     public RuntimeAnimatorController animatorController;
 
     NavMeshAgent _navMeshAgent;
@@ -64,7 +66,8 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
     void FixedUpdate()
     {
         Vector3 navMeshVelocity = _navMeshAgent.velocity;
-        if (_isWalking) navMeshVelocity *= 0.5f;
+        if (_isCrouching) navMeshVelocity *= 0.3f;
+        else if (_isWalking) navMeshVelocity *= 0.5f;
         if (!_isGrounded) return;
 
         float mass = _rigidBody.mass;
@@ -76,7 +79,27 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
 
     void AnimatorUpdate()
     {
-        _animator.speed = _navMeshAgent.velocity.magnitude / 2 + 1;
+        float absoluteForwardAmount = Mathf.Abs(_forwardAmount);
+        if (absoluteForwardAmount == 0)
+            _animator.speed = 1;
+        else if (_isCrouching)
+        {
+            float transitionSpeed = animationCrouchVelocity * absoluteForwardAmount * 2;
+            _animator.speed = _rigidBody.velocity.magnitude / transitionSpeed;
+        }
+        else if (absoluteForwardAmount <= 0.5f)
+        {
+            float transitionSpeed = animationWalkVelocity * absoluteForwardAmount * 2;
+            _animator.speed = _rigidBody.velocity.magnitude / transitionSpeed;
+        }
+        else if (absoluteForwardAmount > 0.5f)
+        {
+            float slope = (animationRunVelocity - animationWalkVelocity) / (1 - 0.5f);
+            float offset = animationRunVelocity - 1 * slope;
+            float transitionSpeed = absoluteForwardAmount * slope + offset;
+            _animator.speed = _rigidBody.velocity.magnitude / transitionSpeed;
+        }
+
         _animator.SetFloat("Forward", _forwardAmount, 0.1f, Time.deltaTime);
         _animator.SetFloat("Turn", _turnAmount, 0.1f, Time.deltaTime);
         _animator.SetBool("Crouch", _isCrouching);
@@ -89,7 +112,7 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
     void MoveUpdate(Vector3 move)
     {
         if (move.magnitude > 1f) move.Normalize();
-        if (_isWalking) move *= 0.5f;
+        if (_isWalking && !_isCrouching) move *= 0.5f;
         move = transform.InverseTransformDirection(move);
         _turnAmount = Mathf.Atan2(move.x, move.z);
         _forwardAmount = move.z;

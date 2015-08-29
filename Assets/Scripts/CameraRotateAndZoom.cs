@@ -7,7 +7,6 @@ public class CameraRotateAndZoom : MonoBehaviour
     public float zoomSensitivity = 1;
 
     Camera _camera;
-    //float _initialFieldOfView;
     CameraFollowTarget _cameraFollowTarget;
     Vector3 _centerCircle;
     float _cameraDistanceFromCenter;
@@ -16,7 +15,6 @@ public class CameraRotateAndZoom : MonoBehaviour
     void Start()
     {
         _camera = GetComponent<Camera>();
-        //_initialFieldOfView = _camera.fieldOfView;
         _cameraFollowTarget = GetComponent<CameraFollowTarget>();
     }
 
@@ -62,16 +60,15 @@ public class CameraRotateAndZoom : MonoBehaviour
     {
         if (Input.GetButton("Horizontal"))
             rotation += Input.GetAxis("Horizontal");
-        else if (Input.GetButton("Alternate"))
-        {
-            if (Input.GetButtonDown("Alternate"))
-                _mousePostionDown = Input.mousePosition;
+        //else if (Input.GetButton("Alternate"))
+        //{
+        //    if (Input.GetButtonDown("Alternate"))
+        //        _mousePostionDown = Input.mousePosition;
 
-            float deltaXPosition = Input.mousePosition.x - _mousePostionDown.x;
-            int direction = (int)(Mathf.Abs(deltaXPosition) / deltaXPosition);
+        //    float deltaXPosition = Input.mousePosition.x - _mousePostionDown.x;
+        //    int direction = (int)(Mathf.Abs(deltaXPosition) / deltaXPosition);
 
-            rotation += direction * Vector3.Distance(_mousePostionDown, Input.mousePosition) * Time.deltaTime;
-        }
-
+        //    rotation += direction * Vector3.Distance(_mousePostionDown, Input.mousePosition) * Time.deltaTime;
+        //}
     }
 }

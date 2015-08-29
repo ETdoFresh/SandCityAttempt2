@@ -32,12 +32,12 @@ public class ControlTerrainDig : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButton("Main") && _lastPosition != Input.mousePosition)
+        if (Input.GetButton("Main"))// && _lastPosition != Input.mousePosition)
         {
             _lastPosition = Input.mousePosition;
             ModifySandDown();
         }
-        else if (Input.GetButton("Alternate") && _lastPosition != Input.mousePosition)
+        else if (Input.GetButton("Alternate"))// && _lastPosition != Input.mousePosition)
         {
             _lastPosition = Input.mousePosition;
             ModifySandUp();

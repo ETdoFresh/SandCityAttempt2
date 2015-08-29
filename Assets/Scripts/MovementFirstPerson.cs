@@ -38,6 +38,7 @@ public class MovementFirstPerson : MonoBehaviour
         ControlFirstPersonMovement.OnCrouch += CrouchCallback;
         ControlFirstPersonMovement.OnWalk += WalkCallback;
         ControlFirstPersonMovement.OnJump += JumpCallback;
+        ControlFirstPersonMovement.OnLookAround += LookAroundCallback;
     }
 
     void OnDisable()
@@ -46,6 +47,7 @@ public class MovementFirstPerson : MonoBehaviour
         ControlFirstPersonMovement.OnCrouch -= CrouchCallback;
         ControlFirstPersonMovement.OnWalk -= WalkCallback;
         ControlFirstPersonMovement.OnJump -= JumpCallback;
+        ControlFirstPersonMovement.OnLookAround -= LookAroundCallback;
     }
 
     void Update()
@@ -65,6 +67,7 @@ public class MovementFirstPerson : MonoBehaviour
         Vector3 force = mass * deltaVelocity / Time.fixedDeltaTime;
         force.y = 0;
         _rigidBody.AddForce(force);
+        _movement = Vector3.zero;
     }
 
     void AnimatorUpdate()
@@ -124,6 +127,7 @@ public class MovementFirstPerson : MonoBehaviour
         _movement = movement;
         if (_movement.magnitude > 1) _movement.Normalize();
         if (_isWalking) _movement *= 0.5f;
+        if (_isCrouching) _movement *= 0.3f;
     }
 
     void JumpCallback(bool isJumping)
@@ -139,5 +143,11 @@ public class MovementFirstPerson : MonoBehaviour
     void CrouchCallback(bool isCrouching)
     {
         _isCrouching = isCrouching;
+    }
+
+    void LookAroundCallback(float xAmount, float turnAmount)
+    {
+        _movement.x = xAmount;
+        transform.Rotate(0, -turnAmount, 0);
     }
 }

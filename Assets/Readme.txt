@@ -78,7 +78,13 @@ S01
 		- Fix nuisances in 1st person
 		- Animator stuff (motion not correct)
 		- Rotation of camera/player switching between modes
+	E26
+		- Started working on Top-Down Camera
+		- Changed some materials and added "water"
+	E27
+		- Finish Top-Down Camera
 	FUTURE
+		- Option Screen for Controls and Resolution and other stuff
 		- Controls - Place Sand Castle Mode
 		- Controls - Smooth Terrin Mode
 		- Controls - Dig/Place Sand (In place now)

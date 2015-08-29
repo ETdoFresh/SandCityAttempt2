@@ -17,7 +17,7 @@ public class ControlPlayerToggle : MonoBehaviour
         _animator = GetComponent<Animator>();
         _thirdPersonController = GetComponent<MovementNavMeshRigidBody>();
         _firstPersonController = GetComponent<MovementFirstPerson>();
-        //_thirdPersonController.enabled = false;
+        _thirdPersonController.enabled = true;
         _firstPersonController.enabled = false;
     }
 
@@ -35,9 +35,9 @@ public class ControlPlayerToggle : MonoBehaviour
 
     void EnableFirstPersonController()
     {
-        _animator.runtimeAnimatorController = firstPersonAnimatorController;
-        _firstPersonController.enabled = true;
-        _thirdPersonController.enabled = false;
+        if (_animator != null) _animator.runtimeAnimatorController = firstPersonAnimatorController;
+        if (_firstPersonController != null) _firstPersonController.enabled = true;
+        if (_thirdPersonController != null) _thirdPersonController.enabled = false;
     }
 
     void EnableThirdPersonController()
