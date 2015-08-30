@@ -1052,12 +1052,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   digRate: .00999999978
-  digSize: 1
+  digSize: 5
   _lastPosition: {x: 0, y: 0}
-  width: 0
-  height: 0
-  xBase: 0
-  yBase: 0
   pointOnTerrain: {x: 0, y: 0}
 --- !u!154 &1271985113
 TerrainCollider:
