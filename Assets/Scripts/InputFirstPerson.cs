@@ -6,11 +6,13 @@ public class InputFirstPerson : MonoBehaviour
 {
     public static event ZoomHandler OnZoom;
     public static event SandActionHandler OnSandAction;
+    public static event SandActionCompleteHandler OnSandActionComplete;
     public static event Action Enable;
     public static event Action Disable;
 
     public delegate void ZoomHandler(float amount);
     public delegate void SandActionHandler(Vector3 position);
+    public delegate void SandActionCompleteHandler(Vector3 position);
 
     public float zoomSensitivity = 1;
     Camera _camera;
@@ -34,12 +36,19 @@ public class InputFirstPerson : MonoBehaviour
     {
         if (Input.GetAxis("Mouse ScrollWheel") != 0)
             OnZoom(Input.GetAxis("Mouse ScrollWheel") * zoomSensitivity);
-        if (Input.GetButtonDown("Main"))
+        if (Input.GetButton("Main"))
         {
             RaycastHit hit;
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
                 OnSandAction(hit.point);
+        }
+        if (Input.GetButtonUp("Main"))
+        {
+            RaycastHit hit;
+            Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+                OnSandActionComplete(hit.point);
         }
     }
 }

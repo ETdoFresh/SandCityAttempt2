@@ -84,16 +84,23 @@ S01
 	E27
 		- Finish Top-Down Camera
 	FUTURE
-		- Option Screen for Controls and Resolution and other stuff
+		- Foot Step Script - Place at rate walking, don't place on standing still
+		- Controls - Dig Smoothly, and wonderfully! Main mechanic
+			- Brush Tools
 		- Controls - Place Sand Castle Mode
 		- Controls - Smooth Terrin Mode
 		- Controls - Dig/Place Sand (In place now)
-		- Fix Groundcheck Gizmo, draw only on selected
 		- Water waves
+		- Option Screen for Controls and Resolution and other stuff
+		- Menu Screen
 		- Sandy Beach Life (birds)
 		- Marine Life
-		- Sharks? Water Spouts? Pirates?
-		- Menu Screen
-		- Networkability (Server/Client)
+	LOW PRIORITY
 		- Slow Radius on Movement
 		- Transition from 1st Person Cam to 3rd person (instead of cutting between cameras)
+		- Networkability (Server/Client)
+		- Sharks? Water Spouts? Pirates?
+		- Fix Groundcheck Gizmo, draw only on selected
+	BUG REPORT
+		- Animation stops when player is stuck…. Not really sure this is a good thing
+		- Crouch Walk Speed doesn't match Movement Speed
