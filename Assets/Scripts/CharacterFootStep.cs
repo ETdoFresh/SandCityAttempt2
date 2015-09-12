@@ -10,7 +10,7 @@ public class CharacterFootStep : MonoBehaviour
     enum Foot { LEFT, RIGHT }
 
     public Vector2 offset = new Vector2(0.25f, 0);
-    public float rate = 1;
+    public float timeBetweenSteps = 1;
     public Vector2 size = new Vector2(0.25f, 0.5f);
     public float digRate = 0.001f;
     Foot _foot = Foot.LEFT;
@@ -21,7 +21,7 @@ public class CharacterFootStep : MonoBehaviour
     {
         _footTimer += Time.deltaTime;
 
-        if (_footTimer > rate)
+        if (_footTimer > timeBetweenSteps)
         {
             _footTimer = 0;
             _foot = _foot == Foot.LEFT ? Foot.RIGHT : Foot.LEFT;

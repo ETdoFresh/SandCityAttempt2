@@ -83,12 +83,13 @@ S01
 		- Changed some materials and added "water"
 	E27
 		- Finish Top-Down Camera
-	FUTURE
+	E37
 		- Foot Step Script - Place at rate walking, don't place on standing still
+	FUTURE
 		- Controls - Dig Smoothly, and wonderfully! Main mechanic
 			- Brush Tools
 		- Controls - Place Sand Castle Mode
-		- Controls - Smooth Terrin Mode
+		- Controls - Smooth Terrain Mode
 		- Controls - Dig/Place Sand (In place now)
 		- Water waves
 		- Option Screen for Controls and Resolution and other stuff

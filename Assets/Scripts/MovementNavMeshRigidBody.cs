@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MovementNavMeshRigidBody : MonoBehaviour {
+public class MovementNavMeshRigidBody : MonoBehaviour
+{
 
     public float stationaryTurnSpeed = 180;
     public float movingTurnSpeed = 360;
@@ -26,11 +27,13 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
     bool _isJumping;
     Vector3 _sphereCheckCenter;
     float _radius;
+    CharacterFootStep _characterFootStep;
 
     void Start()
     {
         _rigidBody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
+        _characterFootStep = GetComponentInChildren<CharacterFootStep>();
 
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _navMeshAgent.updatePosition = false;
@@ -116,6 +119,16 @@ public class MovementNavMeshRigidBody : MonoBehaviour {
         move = transform.InverseTransformDirection(move);
         _turnAmount = Mathf.Atan2(move.x, move.z);
         _forwardAmount = move.z;
+
+        float minimumTimeBetweenSteps = 0.2f;
+        _characterFootStep.timeBetweenSteps = float.PositiveInfinity;
+        if (_forwardAmount != 0)
+        {
+            if (_isCrouching)
+                _characterFootStep.timeBetweenSteps = minimumTimeBetweenSteps / 0.3f;
+            else if (_isGrounded)
+                _characterFootStep.timeBetweenSteps = minimumTimeBetweenSteps;
+        }
 
         CheckGroundStatus();
         ApplyExtraTurnRotation();

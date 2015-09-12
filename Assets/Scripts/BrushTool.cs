@@ -27,6 +27,32 @@ public class BrushTool
         return circleMask;
     }
 
+    public static float[,] GetCircularGradientOutlineMask(int diameter, int innerDiameter, float value = 1)
+    {
+        // TODO: Assert innerDiameter < diameter
+
+        float[,] circleGradientOutlineMask = new float[diameter, diameter];
+        float radius = diameter / 2;
+        float innerRadius = innerDiameter / 2;
+        float deltaRadius = radius - innerRadius;
+        Vector2 center = new Vector2(radius, radius);
+        for (int i = 0; i < diameter; i++)
+            for (int j = 0; j < diameter; j++)
+            {
+                Vector2 cell = new Vector2(i + 0.5f, j + 0.5f);
+                float distance = Vector2.Distance(cell, center);
+                if (distance < radius && distance > innerRadius)
+                {
+                    float middleOfOutline = innerRadius + deltaRadius / 2;
+                    float distanceRatio = 1 - (Mathf.Abs(distance - middleOfOutline) / (deltaRadius / 2));
+                    distanceRatio = Mathf.Clamp01(distanceRatio);
+                    circleGradientOutlineMask[i, j] = value * distanceRatio;
+                }
+            }
+
+        return circleGradientOutlineMask;
+    }
+
     public static float[,] DrawLine(Vector2 point1, Vector2 point2, float size, float value = 1)
     {
         float radius = size / 2;
@@ -60,22 +86,32 @@ public class BrushTool
         return localPoint;
     }
 
-    internal static void ApplyMask(float[,] heights, float[,] mask, float rate, bool flipXY = true)
+    public static float ApplyMask(float[,] heights, float[,] mask, float rate, bool flipXY = true)
     {
         // TODO: Make check that heights and mask must equal.
+        float amountModified = 0;
         for (int x = 0; x < mask.GetLength(0); x++)
             for (int y = 0; y < mask.GetLength(1); y++)
+            {
+                amountModified += mask[x, y] * rate;
                 if (flipXY)
                     heights[y, x] += mask[x, y] * rate;
                 else
                     heights[x, y] += mask[x, y] * rate;
+            }
+        return amountModified;
     }
 
-    public static void ApplyRate(float[,] heights, float rate)
+    public static float ApplyRate(float[,] heights, float rate)
     {
+        float amountModified = 0;
         for (int y = 0; y < heights.GetLength(0); y++)
             for (int x = 0; x < heights.GetLength(1); x++)
+            {
                 heights[y, x] += rate;
+                amountModified += rate;
+            }
+        return amountModified;
     }
 
     public static float GetLineDistance(Vector2 center1, Vector2 center2, Vector2 point)
@@ -97,5 +133,14 @@ public class BrushTool
         bool check1 = Vector2.Distance(center1, point) <= hypotenuse;
         bool check2 = Vector2.Distance(center2, point) <= hypotenuse;
         return check1 && check2;
+    }
+
+    public static float GetTotalValue(float[,] array)
+    {
+        float sumOfArray = 0;
+        for (int x = 0; x < array.GetLength(0); x++)
+            for (int y = 0; y < array.GetLength(0); y++)
+                sumOfArray += array[x, y];
+        return sumOfArray;
     }
 }

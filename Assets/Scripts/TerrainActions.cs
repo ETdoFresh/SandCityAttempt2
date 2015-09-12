@@ -44,8 +44,18 @@ public class TerrainActions : MonoBehaviour
         int baseY = Mathf.FloorToInt(pointOnHeightmap.y - sizeOnHeightmap.y / 2);
         int width = Mathf.CeilToInt(sizeOnHeightmap.x);
         int height = Mathf.CeilToInt(sizeOnHeightmap.y);
+
+        // Making this a circle cause I'm not equipt to handle rotating rectangles yet
+        width = Math.Min(width, height);
+        height = width;
+
         float[,] heights = _terrain.terrainData.GetHeights(baseX, baseY, width, height);
-        BrushTool.ApplyRate(heights, -digRate);
+        float[,] mask = BrushTool.GetCircleMask(width);
+        float amountSandRemoved = BrushTool.ApplyMask(heights, mask, -digRate);
+        mask = BrushTool.GetCircularGradientOutlineMask(width, Mathf.Max(0, width - 3));
+        float amountSandAdded = BrushTool.GetTotalValue(mask);
+        float addBackRate = -amountSandRemoved / amountSandAdded;
+        BrushTool.ApplyMask(heights, mask, addBackRate);
         _terrain.terrainData.SetHeights(baseX, baseY, heights);
     }
 
@@ -95,7 +105,7 @@ public class TerrainActions : MonoBehaviour
 
     void Smooth(Vector3 position, int digSize, float digRate)
     {
-        
+
     }
 
     void Scoop(Vector3 position, int digSize, float digRate)

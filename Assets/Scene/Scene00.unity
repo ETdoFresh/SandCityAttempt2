@@ -1339,14 +1339,14 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 828906960}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dd9a011e0be147e4084fe30e0fd05191, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: {x: .25, y: 0}
-  rate: .100000001
-  size: {x: .25, y: .5}
+  offset: {x: .200000003, y: 0}
+  timeBetweenSteps: Infinity
+  size: {x: .699999988, y: .699999988}
   digRate: .00100000005
 --- !u!1001 &858518589
 Prefab:
