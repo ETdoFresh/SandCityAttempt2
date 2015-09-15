@@ -2953,7 +2953,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1738895035}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: edf516cbda806674d95967abe7eb8714, type: 3}
   m_Name: 
@@ -3006,11 +3006,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1745881e9306e074b8a12456ee6674dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _selectedAction: 0
+  _selectedAction: 1
   fingerDigSize: 5
   fingerDigRate: .00999999978
   scoopDigSize: 5
-  scoopDigRate: .00999999978
+  scoopDigRate: .00499999989
   smoothDigSize: 7
   smoothDigRate: .00999999978
 --- !u!4 &1771050801 stripped

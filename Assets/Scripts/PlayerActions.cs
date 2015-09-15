@@ -9,12 +9,14 @@ public class PlayerActions : MonoBehaviour {
     public static SmoothHandler OnSmooth;
     public static GrabHandler OnGrab;
     public static LiftFingerHandler OnLiftFinger;
+    public SandCollectHandler OnSandCollect;
     public delegate void SandFingerHandler(Vector3 position, int digSize, float digRate);
-    public delegate void ScoopHandler(Vector3 position, int digSize, float digRate);
+    public delegate float ScoopHandler(Vector3 position, int digSize, float digRate);
     public delegate void SmoothHandler(Vector3 position, int digSize, float digRate);
     public delegate void GrabHandler(Vector3 position);
     public delegate void LiftFingerHandler(PlayerActions playerActionsScript);
     public delegate void ScoopFinishHandler(PlayerActions playerActionsScript, Vector3 position);
+    public delegate void SandCollectHandler(float sandCollected);
 
     public enum PlayerAction { FINGER, SCOOP, SMOOTH, GRAB }
     public PlayerAction _selectedAction = PlayerAction.FINGER;
@@ -46,7 +48,8 @@ public class PlayerActions : MonoBehaviour {
                 OnSandFinger(position, fingerDigSize, fingerDigRate);
                 break;
             case PlayerAction.SCOOP:
-                OnScoop(position, scoopDigSize, scoopDigRate);
+                float sandScooped = OnScoop(position, scoopDigSize, scoopDigRate);
+                OnSandCollect(sandScooped);
                 break;
             default:
                 break;

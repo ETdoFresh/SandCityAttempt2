@@ -16,6 +16,7 @@ public class InputFirstPerson : MonoBehaviour
 
     public float zoomSensitivity = 1;
     Camera _camera;
+    Vector3 _lastMousePosition;
 
     void Start()
     {
@@ -36,12 +37,14 @@ public class InputFirstPerson : MonoBehaviour
     {
         if (Input.GetAxis("Mouse ScrollWheel") != 0)
             OnZoom(Input.GetAxis("Mouse ScrollWheel") * zoomSensitivity);
-        if (Input.GetButton("Main"))
+        if (Input.GetButtonDown("Main") || (Input.GetButton("Main") && Input.mousePosition != _lastMousePosition))
         {
             RaycastHit hit;
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
                 OnSandAction(hit.point);
+
+            _lastMousePosition = Input.mousePosition;
         }
         if (Input.GetButtonUp("Main"))
         {

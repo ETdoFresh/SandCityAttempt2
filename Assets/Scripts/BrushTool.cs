@@ -88,16 +88,24 @@ public class BrushTool
 
     public static float ApplyMask(float[,] heights, float[,] mask, float rate, bool flipXY = true)
     {
-        // TODO: Make check that heights and mask must equal.
+        int heightsWidth= flipXY ? heights.GetLength(1) : heights.GetLength(0);
+        int heightsHeight = flipXY ? heights.GetLength(0) : heights.GetLength(1);
+        int maskWidth = mask.GetLength(0);
+        int maskHeight = mask.GetLength(1);
+        int offsetX = Mathf.FloorToInt((heightsWidth - maskWidth) / 2f);
+        int offsetY = Mathf.FloorToInt((heightsHeight - maskHeight) / 2f);
+        if (maskWidth > heightsWidth || maskHeight > heightsHeight)
+            throw new ArgumentException("Mask must be smaller or equal to Heights");
+
         float amountModified = 0;
         for (int x = 0; x < mask.GetLength(0); x++)
             for (int y = 0; y < mask.GetLength(1); y++)
             {
                 amountModified += mask[x, y] * rate;
                 if (flipXY)
-                    heights[y, x] += mask[x, y] * rate;
+                    heights[y + offsetY, x + offsetX] += mask[x, y] * rate;
                 else
-                    heights[x, y] += mask[x, y] * rate;
+                    heights[x + offsetX, y + offsetY] += mask[x, y] * rate;
             }
         return amountModified;
     }

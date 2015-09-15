@@ -68,9 +68,7 @@ public class TerrainActions : MonoBehaviour
             return;
 
         Vector2 pointOnHeightmap = GetPointOnHeightMap(pointOnTerrain);
-        Vector2 lastPointOnHeightmap = GetPointOnHeightMap(_lastPosition);
         float radius = digSize / 2f;
-        int radiusInt = Mathf.FloorToInt(radius);
 
         int baseX = Mathf.FloorToInt(pointOnHeightmap.x - radius);
         int baseY = Mathf.FloorToInt(pointOnHeightmap.y - radius);
@@ -108,40 +106,36 @@ public class TerrainActions : MonoBehaviour
 
     }
 
-    void Scoop(Vector3 position, int digSize, float digRate)
+    float Scoop(Vector3 position, int digSize, float digRate)
     {
         Vector2 pointOnTerrain = new Vector2(position.x - _terrain.gameObject.transform.position.x, position.z - _terrain.gameObject.transform.position.z);
-        if (IsLastPositionEmpty(pointOnTerrain))
-            return;
-        if (IsNextActionOutsideThreshold(pointOnTerrain, 0.01f))
-            return;
-
         Vector2 pointOnHeightmap = GetPointOnHeightMap(pointOnTerrain);
-        Vector2 lastPointOnHeightmap = GetPointOnHeightMap(_lastPosition);
         float radius = digSize / 2f;
-        int radiusInt = (int)(Mathf.Floor(radius));
-
         Vector2 min = new Vector2(pointOnHeightmap.x - radius, pointOnHeightmap.y - radius);
         Vector2 max = new Vector2(pointOnHeightmap.x + radius, pointOnHeightmap.y + radius);
-
         int baseX = Mathf.FloorToInt(min.x);
         int baseY = Mathf.FloorToInt(min.y);
         int width = Mathf.CeilToInt(max.x - min.x);
         int height = Mathf.CeilToInt(max.y - min.y);
         float[,] heights = _terrain.terrainData.GetHeights(baseX, baseY, width, height);
 
-        int numberOfColumns = heights.GetLength(0);
-        int numberOfRows = heights.GetLength(1);
-
-        Vector2 center1 = new Vector2(lastPointOnHeightmap.x - min.x, lastPointOnHeightmap.y - min.y);
-        Vector2 center2 = new Vector2(pointOnHeightmap.x - min.x, pointOnHeightmap.y - min.y);
-        float[,] mask = GetDepressedMask(digSize, radius, numberOfColumns, numberOfRows, center1, center2);
-
-        _reserves += GetReserves(digRate, mask);
-        heights = DepressHeightmap(digRate, heights, numberOfColumns, numberOfRows, mask);
+        float[,] mask;
+        float sandAdded;
+        if (digSize > 2)
+        {
+            mask = BrushTool.GetCircleMask(digSize - 2);
+            sandAdded = BrushTool.ApplyMask(heights, mask, -digRate);
+            mask = BrushTool.GetCircularGradientOutlineMask(digSize, digSize - 2);
+            sandAdded += BrushTool.ApplyMask(heights, mask, digRate / 4, true);
+        }
+        else
+        {
+            mask = BrushTool.GetCircleMask(digSize);
+            sandAdded = BrushTool.ApplyMask(heights, mask, -digRate);
+        }
 
         _terrain.terrainData.SetHeights(baseX, baseY, heights);
-        _lastPosition = pointOnTerrain;
+        return -sandAdded;
 
         // TODO: Cover edge cases, literally
     }
@@ -151,7 +145,6 @@ public class TerrainActions : MonoBehaviour
         Vector2 pointOnTerrain = new Vector2(position.x - _terrain.gameObject.transform.position.x, position.z - _terrain.gameObject.transform.position.z);
         Vector2 pointOnHeightmap = GetPointOnHeightMap(pointOnTerrain);
         float radius = 5;
-        int radiusInt = (int)(Mathf.Floor(radius));
 
         Vector2 min = new Vector2(pointOnHeightmap.x - radius, pointOnHeightmap.y - radius);
         Vector2 max = new Vector2(pointOnHeightmap.x + radius, pointOnHeightmap.y + radius);
@@ -207,17 +200,6 @@ public class TerrainActions : MonoBehaviour
             for (int column = 0; column < numberOfColumns; column++)
                 heights[column, row] = Mathf.Max(0, heights[column, row] - digRate * mask[column, row]);
         return heights;
-    }
-
-    private float GetReserves(float digRate, float[,] mask)
-    {
-        float reserves = 0;
-        int numberOfColumns = mask.GetLength(0);
-        int numberOfRows = mask.GetLength(1);
-        for (int row = 0; row < numberOfRows; row++)
-            for (int column = 0; column < numberOfColumns; column++)
-                reserves += digRate * mask[column, row];
-        return reserves;
     }
 
     private float[,] GetDepressedMask(int digSize, float radius, int numberOfColumns, int numberOfRows, Vector2 center1, Vector2 center2)
