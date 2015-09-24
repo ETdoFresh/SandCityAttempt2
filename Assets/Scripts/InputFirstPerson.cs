@@ -41,7 +41,8 @@ public class InputFirstPerson : MonoBehaviour
         {
             RaycastHit hit;
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
+            LayerMask layerMask = 1 << LayerMask.NameToLayer("RaycastInput");
+            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, layerMask))
                 OnSandAction(hit.point);
 
             _lastMousePosition = Input.mousePosition;
@@ -50,7 +51,8 @@ public class InputFirstPerson : MonoBehaviour
         {
             RaycastHit hit;
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
+            LayerMask layerMask = 1 << LayerMask.NameToLayer("RaycastInput");
+            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, layerMask))
                 OnSandActionComplete(hit.point);
         }
     }

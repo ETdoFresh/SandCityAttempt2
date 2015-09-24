@@ -85,11 +85,14 @@ S01
 		- Finish Top-Down Camera
 	E37
 		- Foot Step Script - Place at rate walking, don't place on standing still
+	E38
+		- Controls - Worked on Scoop.
+	E39
+		- Created a raycast input ground object.
 	FUTURE
-		- Controls - Dig Smoothly, and wonderfully! Main mechanic
-			- Brush Tools
 		- Controls - Place Sand Castle Mode
 		- Controls - Smooth Terrain Mode
+		- Controls - Continuous action, like scoop or finger.
 		- Controls - Dig/Place Sand (In place now)
 		- Water waves
 		- Option Screen for Controls and Resolution and other stuff

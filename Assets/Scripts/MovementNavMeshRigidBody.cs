@@ -182,7 +182,8 @@ public class MovementNavMeshRigidBody : MonoBehaviour
     {
         RaycastHit hit;
         Ray ray = camera.ScreenPointToRay(mousePosition);
-        if (Physics.Raycast(ray, out hit))
+        LayerMask layerMask = (1 << LayerMask.NameToLayer("RaycastInput"));
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             _navMeshAgent.SetDestination(hit.point);
     }
 

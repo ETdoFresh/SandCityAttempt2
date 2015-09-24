@@ -10,6 +10,7 @@ public class ControlPlayerToggle : MonoBehaviour
     public Animator _animator;
     public MovementNavMeshRigidBody _thirdPersonController;
     public MovementFirstPerson _firstPersonController;
+    public CharacterFootStep _characterFootStep;
 
     // Use this for initialization
     void Start()
@@ -17,8 +18,11 @@ public class ControlPlayerToggle : MonoBehaviour
         _animator = GetComponent<Animator>();
         _thirdPersonController = GetComponent<MovementNavMeshRigidBody>();
         _firstPersonController = GetComponent<MovementFirstPerson>();
+        _characterFootStep = GetComponentInChildren<CharacterFootStep>();
+
         _thirdPersonController.enabled = true;
         _firstPersonController.enabled = false;
+        _characterFootStep.enabled = true;
     }
 
     void OnEnable()
@@ -38,12 +42,14 @@ public class ControlPlayerToggle : MonoBehaviour
         if (_animator != null) _animator.runtimeAnimatorController = firstPersonAnimatorController;
         if (_firstPersonController != null) _firstPersonController.enabled = true;
         if (_thirdPersonController != null) _thirdPersonController.enabled = false;
+        if (_characterFootStep != null) _characterFootStep.enabled = false;
     }
 
     void EnableThirdPersonController()
     {
         _animator.runtimeAnimatorController = thirdPersonAnimatorController;
         _thirdPersonController.enabled = true;
+        _characterFootStep.enabled = true;
         _firstPersonController.enabled = false;
     }
 }
