@@ -9,9 +9,9 @@ public class SandCastleDestroy : MonoBehaviour
     {
         if (!_isCollapsed)
         {
-            transform.FindChild("Mound").gameObject.SetActive(true);
-            transform.FindChild("Particle System").gameObject.SetActive(true);
-            transform.FindChild("SandCastle00 1").gameObject.SetActive(false);
+            transform.Find("Mound").gameObject.SetActive(true);
+            transform.Find("Particle System").gameObject.SetActive(true);
+            transform.Find("SandCastle00 1").gameObject.SetActive(false);
             Invoke("DisableMound", 1);
             _isCollapsed = true;
         }
@@ -19,6 +19,6 @@ public class SandCastleDestroy : MonoBehaviour
 
     void DisableMound()
     {
-        transform.FindChild("Mound").GetComponent<Collider>().enabled = false;
+        transform.Find("Mound").GetComponent<Collider>().enabled = false;
     }
 }

@@ -11,7 +11,7 @@ public class MovementFirstPerson : MonoBehaviour
     public Animator _animator;
 
     Rigidbody _rigidBody;
-    NavMeshAgent _navMeshAgent;
+    UnityEngine.AI.NavMeshAgent _navMeshAgent;
     public Vector2 _movement;
     Vector3 _groundNormal;
     float _initialGroundCheckDistance;
@@ -26,7 +26,7 @@ public class MovementFirstPerson : MonoBehaviour
     {
         _rigidBody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
-        _navMeshAgent = GetComponent<NavMeshAgent>();
+        _navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 
         _initialGroundCheckDistance = groundCheckDistance;
     }

@@ -20,7 +20,7 @@ public class CameraPan : MonoBehaviour
         if (_player == null)
             return;
 
-        _player.GetComponent<NavMeshAgent>().SetDestination(_player.transform.position);
+        _player.GetComponent<UnityEngine.AI.NavMeshAgent>().SetDestination(_player.transform.position);
         ComputeTargetVelocity();
         ComputeActualVelocity();
         _player.transform.position += _velocity;

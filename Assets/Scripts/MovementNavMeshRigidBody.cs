@@ -14,7 +14,7 @@ public class MovementNavMeshRigidBody : MonoBehaviour
     public float animationCrouchVelocity = 0.560f;
     public RuntimeAnimatorController animatorController;
 
-    NavMeshAgent _navMeshAgent;
+    UnityEngine.AI.NavMeshAgent _navMeshAgent;
     Rigidbody _rigidBody;
     public Animator _animator;
     float _turnAmount;
@@ -35,7 +35,7 @@ public class MovementNavMeshRigidBody : MonoBehaviour
         _animator = GetComponent<Animator>();
         _characterFootStep = GetComponentInChildren<CharacterFootStep>();
 
-        _navMeshAgent = GetComponent<NavMeshAgent>();
+        _navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         _navMeshAgent.updatePosition = false;
         _navMeshAgent.updateRotation = false;
 

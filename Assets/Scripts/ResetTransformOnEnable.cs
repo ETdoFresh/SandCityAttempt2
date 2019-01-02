@@ -16,7 +16,7 @@ public class ResetTransformOnEnable : MonoBehaviour
 
     void OnEnable()
     {
-        if (_initialPosition != new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity))
+        if (!_initialPosition.Equals(new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity)))
         {
             transform.localPosition = _initialPosition;
             transform.localRotation = _initialRotation;
